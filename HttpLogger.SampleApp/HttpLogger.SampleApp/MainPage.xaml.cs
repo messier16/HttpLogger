@@ -7,89 +7,117 @@ using Xamarin.Forms;
 
 namespace HttpLogger.SampleApp
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage()
-		{
-			InitializeComponent();
-		}
+    public partial class MainPage : ContentPage
+    {
+        public MainPage()
+        {
+            InitializeComponent();
+        }
 
-		private async void Button_OnClicked(object sender, EventArgs e)
-		{
-			HttpClient client;
-
+        private async void Button_OnClicked(object sender, EventArgs e)
+        {
+            var sndr = sender as Button;
+            HttpClient client;
 #if DEBUG
-			var loggingHandler = new HttpLoggingHandler(new HttpClientHandler(), RequestAction, ResponseAction);
-			client = new HttpClient(loggingHandler);
+            var loggingHandler = new HttpLoggingHandler(new NativeMessageHandler(), RequestAction, ResponseAction);
+            client = new HttpClient(loggingHandler);
 #else
 			client = new HttpClient(new NativeMessageHandler());
 #endif
-			var result = await client.GetStringAsync("https://pokeapi.co/api/v2/pokemon/1/");
-		}
-
-        private Task ResponseAction(HttpResponseMessage httpResponseMessage)
-        {
-            Device.BeginInvokeOnMainThread(() => { 
-
-
-				var fs = new FormattedString();
-
-				fs.Spans.Add(new Span { Text = "Status: " });
-				fs.Spans.Add(new Span { Text = httpResponseMessage.StatusCode.ToString(), FontAttributes = FontAttributes.Bold });
-
-				fs.Spans.Add(NewLine());
-
-				if (httpResponseMessage.Headers.Any())
-				{
-					fs.Spans.Add(new Span { Text = "Headers:" });
-					foreach (var header in httpResponseMessage.Headers)
-					{
-						fs.Spans.Add(new Span { Text = "\t" + header.Key });
-						fs.Spans.Add(new Span { Text = String.Join(",",header.Value), FontAttributes = FontAttributes.Bold });
-						fs.Spans.Add(NewLine());
-					}
-				}
-
-				LabelResponse.FormattedText = fs;
-			});
-            return Task.FromResult(0);
+            sndr.Text = "Querying";
+            sndr.IsEnabled = false;
+            await client.GetStringAsync("https://pokeapi.co/api/v2/pokemon/1/");
+            sndr.Text = "Query";
+            sndr.IsEnabled = true;
         }
 
-        private Task RequestAction(HttpRequestMessage httpRequestMessage)
+        private async Task ResponseAction(HttpResponseMessage httpResponseMessage)
         {
-            Device.BeginInvokeOnMainThread(() => {
+            string content = null;
+            if (httpResponseMessage.Content != null)
+            {
+                content = await httpResponseMessage.Content.ReadAsStringAsync();
+                content = content.Substring(0, Math.Min(100, content.Length)) + "...";
+            }
+            Device.BeginInvokeOnMainThread(() =>
+            {
 
-				var fs = new FormattedString();
+                var fs = new FormattedString();
 
-				fs.Spans.Add(new Span { Text = "URL: " });
-				fs.Spans.Add(new Span { Text = httpRequestMessage.RequestUri.ToString(), FontAttributes = FontAttributes.Bold });
+                fs.Spans.Add(new Span { Text = "Status: " });
+                fs.Spans.Add(new Span { Text = httpResponseMessage.StatusCode.ToString(), FontAttributes = FontAttributes.Bold });
 
-				fs.Spans.Add(NewLine());
+                fs.Spans.Add(NewLine());
 
-				fs.Spans.Add(new Span { Text = "Method: " });
-				fs.Spans.Add(new Span { Text = httpRequestMessage.Method.ToString(), FontAttributes = FontAttributes.Bold });
+                if (httpResponseMessage.Headers.Any())
+                {
+                    fs.Spans.Add(new Span { Text = "Headers:" });
+                    fs.Spans.Add(NewLine());
+                    foreach (var header in httpResponseMessage.Headers)
+                    {
+                        fs.Spans.Add(new Span { Text = "\t•" + header.Key + ": " });
+                        fs.Spans.Add(new Span { Text = String.Join(",", header.Value), FontAttributes = FontAttributes.Bold });
+                        fs.Spans.Add(NewLine());
+                    }
+                }
 
-				fs.Spans.Add(NewLine());
+                if (content != null)
+                {
+                    fs.Spans.Add(new Span { Text = "Content: " });
+                    fs.Spans.Add(new Span { Text = content, FontAttributes = FontAttributes.Bold });
+                }
 
-				if (httpRequestMessage.Headers.Any())
-				{
-					fs.Spans.Add(new Span { Text = "Headers:" });
-					foreach (var header in httpRequestMessage.Headers)
-					{
-						fs.Spans.Add(new Span { Text = "\t" + header.Key });
-						fs.Spans.Add(new Span { Text = String.Join(",",header.Value), FontAttributes = FontAttributes.Bold });
-					}
-				}
-
-
-				LabelRequest.FormattedText = fs;
-			});
-            return Task.FromResult(0);
+                LabelResponse.FormattedText = fs;
+            });
         }
 
-		Span NewLine()
-		{
-			return new Span { Text = "\n" };
-		}
+        private async Task RequestAction(HttpRequestMessage httpRequestMessage)
+        {
+            string content = null;
+            if (httpRequestMessage.Content != null)
+            {
+                content = await httpRequestMessage.Content.ReadAsStringAsync();
+            }
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+
+                var fs = new FormattedString();
+
+                fs.Spans.Add(new Span { Text = "URL: " });
+                fs.Spans.Add(new Span { Text = httpRequestMessage.RequestUri.ToString(), FontAttributes = FontAttributes.Bold });
+
+                fs.Spans.Add(NewLine());
+
+                fs.Spans.Add(new Span { Text = "Method: " });
+                fs.Spans.Add(new Span { Text = httpRequestMessage.Method.ToString(), FontAttributes = FontAttributes.Bold });
+
+                fs.Spans.Add(NewLine());
+
+                if (httpRequestMessage.Headers.Any())
+                {
+                    fs.Spans.Add(new Span { Text = "Headers:" });
+                    fs.Spans.Add(NewLine());
+                    foreach (var header in httpRequestMessage.Headers)
+                    {
+                        fs.Spans.Add(new Span { Text = "\t•" + header.Key + ": " });
+                        fs.Spans.Add(new Span { Text = String.Join(",", header.Value), FontAttributes = FontAttributes.Bold });
+                    }
+                }
+
+                if (content != null)
+                {
+                    fs.Spans.Add(new Span { Text = "Content: " });
+                    fs.Spans.Add(new Span { Text = content, FontAttributes = FontAttributes.Bold });
+                }
+
+                LabelRequest.FormattedText = fs;
+            });
+        }
+
+        Span NewLine()
+        {
+            return new Span { Text = "\n" };
+        }
     }
 }

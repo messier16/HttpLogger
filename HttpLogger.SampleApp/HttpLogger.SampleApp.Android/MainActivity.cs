@@ -6,8 +6,7 @@ using Xamarin.Forms.Platform.Android;
 
 namespace HttpLogger.SampleApp.Droid
 {
-    [Activity(Label = "HttpLogger.SampleApp", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true,
-        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "HttpLogger.SampleApp", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
     public class MainActivity : FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
