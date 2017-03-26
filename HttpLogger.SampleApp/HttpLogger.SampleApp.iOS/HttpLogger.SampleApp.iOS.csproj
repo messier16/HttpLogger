@@ -132,10 +132,13 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.3.3.193\lib\Xamarin.iOS10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\..\packages\modernhttpclient.2.4.2\lib\Xamarin.iOS10\ModernHttpClient.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HttpLogger.SampleApp\HttpLogger.SampleApp.csproj">
-      <Project>{eaefeb74-3b2b-44b9-8dc1-00576c0b82d8}</Project>
+      <Project>{E3DD758E-150D-4EA7-B737-DFC5C6C6A479}</Project>
       <Name>HttpLogger.SampleApp</Name>
     </ProjectReference>
   </ItemGroup>
