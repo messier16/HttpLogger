@@ -2,7 +2,7 @@ version: '0.0.{build}'
 before_build:
   - nuget restore
 artifacts:
-  - path: /.*\.nupkg/
+  - path: HttpLogger.0.0.1.nupkg
     name: nuget_pack
 assembly_info:
   patch: true
