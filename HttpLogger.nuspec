@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>HttpLogger</id>
-    <version>0.0.1</version>
+    <version>$id$</version>
     <title>$title$</title>
     <authors>Antonio Feregrino</authors>
     <owners>Messier16</owners>
     <projectUrl>https://github.com/messier16/HttpLogger</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/ThatCSharpGuy/Jirapi/master/icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Inspect your HttpClient's queries and responses</description>
     <releaseNotes>location_area_encounter at Pokemon resource is back!.</releaseNotes>
     <copyright>Messier16, 2016</copyright>
     <tags>Http, HttpLogger</tags>
