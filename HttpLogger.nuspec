@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>HttpLogger</id>
-    <version>$id$</version>
+    <version>$version$</version>
     <title>$title$</title>
     <authors>Antonio Feregrino</authors>
     <owners>Messier16</owners>
