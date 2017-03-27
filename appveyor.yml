@@ -1,8 +1,8 @@
-version: '0.{build}'
+version: '0.0.{build}'
 before_build:
   - nuget restore
 artifacts:
-  - path: HttpLogger.$(APPVEYOR_BUILD_VERSION).nupkg
+  - path: /.*\.nupkg/
     name: nuget_pack
 assembly_info:
   patch: true
